@@ -66,7 +66,14 @@ namespace PIVisionAttributeIdentifierUtility
             Guid AttGUID0 = new Guid(VisionDataTable.Rows[i][4].ToString());
 
             AFAttribute afAtt0 = vizAttribut.SearchAndPrint2(myPISystem0, eltGUID0, AttGUID0);
-            util.WriteInYellow("Name: " + afAtt0.Name + " | DR: " + afAtt0.DataReferencePlugIn + " | path: " + afAtt0.GetPath());
+            if (afAtt0!=null)
+            {
+                util.WriteInYellow("Name: " + afAtt0.Name + " | DR: " + afAtt0.DataReferencePlugIn + " | path: " + afAtt0.GetPath());
+            }
+            else
+            {
+                util.WriteInRed("no read access on " + myPISystem0);
+            }
         }
 
         static void PrintOnlyAnalysisDRAttr(DataTable VisionDataTable, int i)
@@ -79,13 +86,20 @@ namespace PIVisionAttributeIdentifierUtility
             Guid AttGUID = new Guid(VisionDataTable.Rows[i][4].ToString());
 
             AFAttribute afAtt = vizAttribut.SearchAndPrint2(myPISystem, eltGUID, AttGUID);
+
+            if (afAtt != null)
+            {
+                if (afAtt.DataReferencePlugIn != null)
+                    if (afAtt.DataReferencePlugIn.ToString() == "Analysis")
+                    {
+                        util.WriteInYellow("Name: " + afAtt.Name + " | DR: " + afAtt.DataReferencePlugIn + " | path: " + afAtt.GetPath());
+                    }
+            }
+            else
+            {
+                util.WriteInRed("no read access on " + myPISystem);
+            }
            
-           
-            if(afAtt.DataReferencePlugIn!=null)
-                if (afAtt.DataReferencePlugIn.ToString() == "Analysis")
-                {
-                    util.WriteInYellow("Name: " + afAtt.Name + " | DR: " + afAtt.DataReferencePlugIn + " | path: " + afAtt.GetPath());
-                }
             
             
             
