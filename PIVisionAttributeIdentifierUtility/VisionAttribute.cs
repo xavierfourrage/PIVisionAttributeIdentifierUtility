@@ -12,7 +12,6 @@ namespace PIVisionAttributeIdentifierUtility
     class VisionAttribute
     {
        
-
         public AFAttribute SearchAndPrint2(PISystem afserver, Guid ElementGUID, Guid AttributeGUID)
         {
             try

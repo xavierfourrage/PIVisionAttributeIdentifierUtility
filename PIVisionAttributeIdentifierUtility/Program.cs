@@ -20,7 +20,7 @@ namespace PIVisionAttributeIdentifierUtility
             string sqlInstance=visiondata.ValidatingSQLConnection();
             DataTable VisionDataTable = visiondata.PullVisionAttributesGUIDlist(sqlInstance);
 
-            bool confirm = util.Confirm("Do you want to list only Analysis Data Reference attributes? If not, it will list all attributes (y/n)");
+            bool confirm = util.Confirm("Do you want to list only Analysis Data Reference attributes? If not, it will list all attributes");
            if (confirm)
             {
                 util.WriteInBlue("Display: " + VisionDataTable.Rows[0][1]);
