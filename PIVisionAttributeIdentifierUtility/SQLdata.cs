@@ -16,7 +16,7 @@ namespace PIVisionAttributeIdentifierUtility
         {
             DataTable dataTable = new DataTable();
             string connString = $@"Server={sqlserver};Database=PIVision;Integrated Security=true;MultipleActiveResultSets=true"; /*---> using integrated security*/
-          /*  string connString = $@"Server={sqlserver};Database=PIVision;User ID=XavierF;password=XavierF!!;MultipleActiveResultSets=true"; *//* ---> using SQL user*/
+            /*string connString = $@"Server={sqlserver};Database=PIVision;User ID=XavierF;password=XavierF!!;MultipleActiveResultSets=true";*/ /*---> using SQL user*/
 
             string query =string.Format(" SELECT a.[DisplayID],Name ,[Server] , FullDatasource  FROM [PIVision].[dbo].[DisplayDatasources]a, [PIVision].[dbo].[View_DisplayList]b where a.DisplayID=b.DisplayID  and FullDatasource like '%|%'");
                 
@@ -41,16 +41,18 @@ namespace PIVisionAttributeIdentifierUtility
             {
                 string FullDataSource = datatable.Rows[i][3].ToString();
                 if(FullDataSource.Contains("?"))
-                {
-                    
+                {                  
                   /*  FullDataSource = FullDataSource.TrimStart('\\');*/
                     string[] subs = FullDataSource.Split('?');
                     string[] subs1 = FullDataSource.Split('\\');
                     string databasename = subs1[3];
                     string elementPath = subs[0];
                     string [] subs2 = FullDataSource.Split('|');
-                    string attributeName = subs2[1].Split('?')[0];
-                    string attributePath = elementPath + "|"+attributeName;
+                    /*string attributeName = "|"+subs2[1].Split('?')[0];*/
+                    string attributeName = subs[1].Substring(36);
+                    string attributePath = elementPath+attributeName;
+
+                    
 
                     datatable.Rows[i]["AFDatabase"] = databasename;
                     datatable.Rows[i]["AttributePath"] = attributePath;
@@ -70,7 +72,7 @@ namespace PIVisionAttributeIdentifierUtility
         public void TestingSQLConnection(string sqlserver)
         {
             string connString = $@"Server={sqlserver};Database=PIVision;Integrated Security=true;MultipleActiveResultSets=true"; /*---> using integrated security*/
-/*            string connString = $@"Server={sqlserver};Database=PIVision;User ID=XavierF;password=XavierF!!;MultipleActiveResultSets=true"; *//* ---> using SQL user*/
+           /* string connString = $@"Server={sqlserver};Database=PIVision;User ID=XavierF;password=XavierF!!;MultipleActiveResultSets=true";*/ /*---> using SQL user*/
             SqlConnection connection = new SqlConnection(connString);  
             connection.Open();
         }

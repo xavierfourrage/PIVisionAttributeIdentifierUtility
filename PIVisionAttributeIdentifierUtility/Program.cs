@@ -110,18 +110,26 @@ namespace PIVisionAttributeIdentifierUtility
             Utilities util = new Utilities();
             VisionAttribute vizAttribut = new VisionAttribute();
             PISystems myPISystems = new PISystems();
-            PISystem myPISystem = myPISystems[VisionDataTable.Rows[i][2].ToString()];
-            AFDatabase myDB = myPISystem.Databases[VisionDataTable.Rows[i]["AFDatabase"].ToString()];
-            string attributePath = VisionDataTable.Rows[i]["AttributePath"].ToString();
 
-            AFAttribute afAtt = vizAttribut.SearchAndPrint3(attributePath, myDB);
-            if (afAtt != null)
+            try
             {
-                util.WriteInYellow("Name: " + afAtt.Name + " | DR: " + afAtt.DataReferencePlugIn + " | path: " + afAtt.GetPath());
+                PISystem myPISystem = myPISystems[VisionDataTable.Rows[i][2].ToString()];            
+                AFDatabase myDB = myPISystem.Databases[VisionDataTable.Rows[i]["AFDatabase"].ToString()];
+                string attributePath = VisionDataTable.Rows[i]["AttributePath"].ToString();
+
+                AFAttribute afAtt = vizAttribut.SearchAndPrint3(attributePath, myDB);
+                if (afAtt != null)
+                {
+                    util.WriteInYellow("Name: " + afAtt.Name + " | DR: " + afAtt.DataReferencePlugIn + " | path: " + afAtt.GetPath());
+                }
+                else
+                {
+                    util.WriteInRed("attribute " + attributePath + " not found");
+                }
             }
-            else
-            {
-                util.WriteInRed("attribute "+attributePath+" not found");
+            catch (Exception ex)
+            {               
+                util.WriteInRed(ex.Message);
             }
         }
 
@@ -130,23 +138,32 @@ namespace PIVisionAttributeIdentifierUtility
             Utilities util = new Utilities();
             VisionAttribute vizAttribut = new VisionAttribute();
             PISystems myPISystems = new PISystems();
-            PISystem myPISystem = myPISystems[VisionDataTable.Rows[i][2].ToString()];
-            AFDatabase myDB = myPISystem.Databases[VisionDataTable.Rows[i]["AFDatabase"].ToString()];
-            string attributePath = VisionDataTable.Rows[i]["AttributePath"].ToString();
+            
+            try
+            {
+                PISystem myPISystem = myPISystems[VisionDataTable.Rows[i][2].ToString()];
+                AFDatabase myDB = myPISystem.Databases[VisionDataTable.Rows[i]["AFDatabase"].ToString()];
+                string attributePath = VisionDataTable.Rows[i]["AttributePath"].ToString();
 
-            AFAttribute afAtt = vizAttribut.SearchAndPrint3(attributePath, myDB);
-            if (afAtt != null)
-            {
-                if (afAtt.DataReferencePlugIn != null)
-                    if (afAtt.DataReferencePlugIn.ToString() == "Analysis")
-                    {
-                        util.WriteInYellow("Name: " + afAtt.Name + " | DR: " + afAtt.DataReferencePlugIn + " | path: " + afAtt.GetPath());
-                    }
+                AFAttribute afAtt = vizAttribut.SearchAndPrint3(attributePath, myDB);
+                if (afAtt != null)
+                {
+                    if (afAtt.DataReferencePlugIn != null)
+                        if (afAtt.DataReferencePlugIn.ToString() == "Analysis")
+                        {
+                            util.WriteInYellow("Name: " + afAtt.Name + " | DR: " + afAtt.DataReferencePlugIn + " | path: " + afAtt.GetPath());
+                        }
+                }
+                else
+                {
+                    util.WriteInRed("attribute " + attributePath + " not found");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                util.WriteInRed("attribute " + attributePath + " not found");
+                util.WriteInRed(ex.Message);
             }
+           
         }
     }
 
