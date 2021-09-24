@@ -17,7 +17,6 @@ namespace PIVisionAttributeIdentifierUtility
             string connString = $@"Server={sqlserver};Database=PIVision;Integrated Security=true;MultipleActiveResultSets=true"; /* ---> using integrated security*/
             string query =string.Format("SELECT a.[DisplayID],Name ,[Server] ,SUBSTRING(TRIM(SUBSTRING(Datasource,1, CHARINDEX('?',Datasource)-1) from Datasource),2,36)as Element_GUID,RIGHT(Datasource, 36) as Att_GUID FROM [PIVision].[dbo].[DisplayDatasources]a, [PIVision].[dbo].[View_DisplayList]b where a.DisplayID=b.DisplayID and Datasource like '%?%'");
 
-
             StringBuilder errorMessages = new StringBuilder();
         
                 SqlConnection connection = new SqlConnection(connString);
