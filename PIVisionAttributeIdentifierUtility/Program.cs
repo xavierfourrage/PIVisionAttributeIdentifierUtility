@@ -19,6 +19,7 @@ namespace PIVisionAttributeIdentifierUtility
 
             string sqlInstance=visiondata.ValidatingSQLConnection();
             DataTable VisionDataTable = visiondata.PullVisionAttributesGUIDlist(sqlInstance);
+            VisionDataTable = visiondata.FormatDatable(VisionDataTable);
 
             bool confirm = util.Confirm("Do you want to list only Analysis Data Reference attributes? If not, it will list all attributes");
            if (confirm)
@@ -40,7 +41,8 @@ namespace PIVisionAttributeIdentifierUtility
             else
             {
                 util.WriteInBlue("Display: " + VisionDataTable.Rows[0][1]);
-                PrintAttributeDetail(VisionDataTable, 0);
+                /*PrintAttributeDetail(VisionDataTable, 0);*/
+                PrintAttributeDetail2(VisionDataTable, 0);
 
                 for (int i = 1; i < VisionDataTable.Rows.Count; i++)
                 {
@@ -49,7 +51,8 @@ namespace PIVisionAttributeIdentifierUtility
                         Console.WriteLine(); //linebreak
                         util.WriteInBlue("Display: " + VisionDataTable.Rows[i][1]);
                     }
-                    PrintAttributeDetail(VisionDataTable, i);
+                   /* PrintAttributeDetail(VisionDataTable, i);*/
+                    PrintAttributeDetail2(VisionDataTable, i);
                 }
             }
 
@@ -98,11 +101,28 @@ namespace PIVisionAttributeIdentifierUtility
             else
             {
                 util.WriteInRed("no read access on " + myPISystem);
+            } 
+            
+        }
+
+        static void PrintAttributeDetail2(DataTable VisionDataTable, int i)
+        {
+            Utilities util = new Utilities();
+            VisionAttribute vizAttribut = new VisionAttribute();
+            PISystems myPISystems = new PISystems();
+            PISystem myPISystem = myPISystems[VisionDataTable.Rows[i][2].ToString()];
+            AFDatabase myDB = myPISystem.Databases[VisionDataTable.Rows[i]["AFDatabase"].ToString()];
+            string attributePath = VisionDataTable.Rows[i]["AttributePath"].ToString();
+
+            AFAttribute afAtt = vizAttribut.SearchAndPrint3(attributePath, myDB);
+            if (afAtt != null)
+            {
+                util.WriteInYellow("Name: " + afAtt.Name + " | DR: " + afAtt.DataReferencePlugIn + " | path: " + afAtt.GetPath());
             }
-           
-            
-            
-            
+            else
+            {
+                util.WriteInRed("attribute "+attributePath+" not found");
+            }
         }
     }
 

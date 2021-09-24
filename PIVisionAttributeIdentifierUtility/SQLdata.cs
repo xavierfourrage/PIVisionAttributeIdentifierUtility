@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
+using OSIsoft.AF;
 
 namespace PIVisionAttributeIdentifierUtility
 {
@@ -15,10 +16,10 @@ namespace PIVisionAttributeIdentifierUtility
         {
             DataTable dataTable = new DataTable();
             string connString = $@"Server={sqlserver};Database=PIVision;Integrated Security=true;MultipleActiveResultSets=true"; /* ---> using integrated security*/
-            string query =string.Format("SELECT a.[DisplayID],Name ,[Server] ,SUBSTRING(TRIM(SUBSTRING(Datasource,1, CHARINDEX('?',Datasource)-1) from Datasource),2,36)as Element_GUID,RIGHT(Datasource, 36) as Att_GUID FROM [PIVision].[dbo].[DisplayDatasources]a, [PIVision].[dbo].[View_DisplayList]b where a.DisplayID=b.DisplayID and Datasource like '%?%'");
-
-            StringBuilder errorMessages = new StringBuilder();
-        
+            /*            string query =string.Format("SELECT a.[DisplayID],Name ,[Server] ,SUBSTRING(TRIM(SUBSTRING(Datasource,1, CHARINDEX('?',Datasource)-1) from Datasource),2,36)as Element_GUID,RIGHT(Datasource, 36) as Att_GUID FROM [PIVision].[dbo].[DisplayDatasources]a, [PIVision].[dbo].[View_DisplayList]b where a.DisplayID=b.DisplayID and Datasource like '%?%'");
+            */
+            string query =string.Format(" SELECT a.[DisplayID],Name ,[Server] , FullDatasource  FROM [PIVision].[dbo].[DisplayDatasources]a, [PIVision].[dbo].[View_DisplayList]b where a.DisplayID=b.DisplayID  and FullDatasource like '%|%'");
+                
                 SqlConnection connection = new SqlConnection(connString);
 
                 SqlCommand command = new SqlCommand(query, connection);
@@ -29,6 +30,41 @@ namespace PIVisionAttributeIdentifierUtility
                 adapter.Dispose();
          
             return dataTable;
+        }
+
+        public DataTable FormatDatable(DataTable datatable)
+        {           
+           datatable.Columns.Add("AFDatabase", typeof(string));
+           datatable.Columns.Add("AttributePath", typeof(string));
+
+            for (int i = 0; i < datatable.Rows.Count; i++)
+            {
+                string FullDataSource = datatable.Rows[i][3].ToString();
+                if(FullDataSource.Contains("?"))
+                {
+                    
+                  /*  FullDataSource = FullDataSource.TrimStart('\\');*/
+                    string[] subs = FullDataSource.Split('?');
+                    string[] subs1 = FullDataSource.Split('\\');
+                    string databasename = subs1[3];
+                    string elementPath = subs[0];
+                    string [] subs2 = FullDataSource.Split('|');
+                    string attributeName = subs2[1].Split('?')[0];
+                    string attributePath = elementPath + "|"+attributeName;
+
+                    datatable.Rows[i]["AFDatabase"] = databasename;
+                    datatable.Rows[i]["AttributePath"] = attributePath;
+                }
+                else
+                {                   
+                    string[] subs1 = FullDataSource.Split('\\');
+                    string databasename = subs1[3];
+                    datatable.Rows[i]["AFDatabase"] = databasename;
+                    datatable.Rows[i]["AttributePath"] = FullDataSource;
+                }              
+            }
+            return datatable;
+
         }
 
         public void TestingSQLConnection(string sqlserver)

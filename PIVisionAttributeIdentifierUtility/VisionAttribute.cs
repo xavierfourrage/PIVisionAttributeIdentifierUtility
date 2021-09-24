@@ -25,5 +25,20 @@ namespace PIVisionAttributeIdentifierUtility
                 return null;
             }
         }
+
+        public AFAttribute SearchAndPrint3(string path, AFDatabase myDB)
+        {
+           try
+            {
+                
+                AFAttribute afattribute = AFAttribute.FindAttribute(path,myDB);
+                return afattribute;
+            }
+            catch
+            {
+                return null;
+            }
+            
+        }
     }
 }
