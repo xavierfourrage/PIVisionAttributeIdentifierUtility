@@ -15,9 +15,9 @@ namespace PIVisionAttributeIdentifierUtility
         public DataTable PullVisionAttributesGUIDlist(string sqlserver)
         {
             DataTable dataTable = new DataTable();
-            string connString = $@"Server={sqlserver};Database=PIVision;Integrated Security=true;MultipleActiveResultSets=true"; /* ---> using integrated security*/
-            /*            string query =string.Format("SELECT a.[DisplayID],Name ,[Server] ,SUBSTRING(TRIM(SUBSTRING(Datasource,1, CHARINDEX('?',Datasource)-1) from Datasource),2,36)as Element_GUID,RIGHT(Datasource, 36) as Att_GUID FROM [PIVision].[dbo].[DisplayDatasources]a, [PIVision].[dbo].[View_DisplayList]b where a.DisplayID=b.DisplayID and Datasource like '%?%'");
-            */
+            string connString = $@"Server={sqlserver};Database=PIVision;Integrated Security=true;MultipleActiveResultSets=true"; /*---> using integrated security*/
+          /*  string connString = $@"Server={sqlserver};Database=PIVision;User ID=XavierF;password=XavierF!!;MultipleActiveResultSets=true"; *//* ---> using SQL user*/
+
             string query =string.Format(" SELECT a.[DisplayID],Name ,[Server] , FullDatasource  FROM [PIVision].[dbo].[DisplayDatasources]a, [PIVision].[dbo].[View_DisplayList]b where a.DisplayID=b.DisplayID  and FullDatasource like '%|%'");
                 
                 SqlConnection connection = new SqlConnection(connString);
@@ -69,7 +69,8 @@ namespace PIVisionAttributeIdentifierUtility
 
         public void TestingSQLConnection(string sqlserver)
         {
-            string connString = $@"Server={sqlserver};Database=PIVision;Integrated Security=true;MultipleActiveResultSets=true"; /* ---> using integrated security*/
+            string connString = $@"Server={sqlserver};Database=PIVision;Integrated Security=true;MultipleActiveResultSets=true"; /*---> using integrated security*/
+/*            string connString = $@"Server={sqlserver};Database=PIVision;User ID=XavierF;password=XavierF!!;MultipleActiveResultSets=true"; *//* ---> using SQL user*/
             SqlConnection connection = new SqlConnection(connString);  
             connection.Open();
         }
